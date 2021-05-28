@@ -1,0 +1,41 @@
+version: 2
+
+sources:
+  - name: ticket_tailor
+    database: raw
+    tables:
+      - name: events
+        description: The list of all events offered
+        columns:
+          - name: id
+            description: The ID of the event
+            tests:
+              - not_null
+              - unique
+
+      - name: issued_tickets
+        description: The tickets sold for the events
+        columns:
+          - name: event_id
+            description: Foreign key to the event table
+            test:
+              - not_null
+              - relationships:
+                  to: ref('events')
+                  field: id
+          
+          - name: order_id
+            description: Foreign key to the orders table
+            test:
+              - not_null
+              - relationships:
+                  to: ref('orders')
+                  field: id
+
+      - name: orders
+        description: The orders placed on the website
+        columns:
+          - name: id
+            test:
+              - not_null
+              - unique

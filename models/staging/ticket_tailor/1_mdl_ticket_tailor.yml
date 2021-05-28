@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: stg_tt_events
+    description: This model cleans up the events data from raw.ticket_tailor.events
+    columns:
+      - name: event_id
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_tt_orders
+    description: This model cleans up the orders data from raw.ticket_tailor.orders
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+
+      - name: status
+        tests:
+          - accepted_values:
+              values: ['completed', 'cancelled']
+          
+      - name: total
+        tests:
+          - not_null
+          - assert_order_total_greater_than_zero
+
+  - name: stg_tt_tickets
+    description: This model cleans up the tickets data from raw.ticket_tailor.issued_tickets
+    columns:
+      - name: ticket_id
+        tests:
+          - not_null
+          - unique
+    
+      - name: event_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tt_events')
+              field: id
+
+      - name: order_id
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_tt_orders')
+              field: id
+
+
+

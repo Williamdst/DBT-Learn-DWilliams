@@ -1,6 +1,14 @@
-select
-    id as customer_id,
-    first_name,
-    last_name
+WITH source AS(
+    SELECT * FROM {{ source('jaffle_shop', 'customers') }}
+),
+renamed as (
+    SELECT
+        -- keys
+        id AS customer_id,
 
-from {{ source('jaffle_shop', 'customers') }}
+        -- description
+        first_name,
+        last_name
+    FROM source
+)
+SELECT * FROM renamed
